@@ -1,0 +1,112 @@
+#Git : Install in CentOs
+	
+#Install and Configure Git which is the Revision Control System.
+# Step1:Install Git.
+[root@dlp ~]# dnf -y install git
+
+#Step2:It's possible to use for any common user.
+#For example, Create a repository with a user on localhost.
+
+# create an empty repository
+[cent@dlp ~]$ mkdir project.git
+[cent@dlp ~]$ cd project.git
+[cent@dlp project.git]$ git init --bare
+hint: is subject to change. To configure the initial branch name to use in all
+hint: of your new repositories, which will suppress this warning, call:
+hint:
+hint:   git config --global init.defaultBranch <name>
+hint:
+hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+hint: 'development'. The just-created branch can be renamed via this command:
+hint:
+hint:   git branch -m <name>
+Initialized empty Git repository in /home/cent/project.git/
+
+[cent@dlp ~]$ cd
+# create a working directory
+[cent@dlp ~]$ mkdir work
+[cent@dlp ~]$ cd work
+[cent@dlp work]$ git init
+hint: Using 'master' as the name for the initial branch. This default branch name
+hint: is subject to change. To configure the initial branch name to use in all
+hint: of your new repositories, which will suppress this warning, call:
+hint:
+hint:   git config --global init.defaultBranch <name>
+hint:
+hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+hint: 'development'. The just-created branch can be renamed via this command:
+hint:
+hint:   git branch -m <name>
+Initialized empty Git repository in /home/cent/work/.git/
+
+# set username and email address
+[cent@dlp work]$ git config --global user.name "acaluege"
+[cent@dlp work]$ git config --global user.email "acaluege@outlook.com"
+
+# create a test file and apply it to repository
+[cent@dlp work]$ echo testfile > testfile1.txt
+[cent@dlp work]$ git add testfile1.txt
+[cent@dlp work]$ git commit testfile1.txt -m "Initial Commit"
+[master (root-commit) ea50586] Initial Commit
+ 1 file changed, 1 insertion(+)
+ create mode 100644 testfile1.txt
+
+[cent@dlp work]$ git push /home/cent/project.git master
+Enumerating objects: 3, done.
+Counting objects: 100% (3/3), done.
+Writing objects: 100% (3/3), 232 bytes | 116.00 KiB/s, done.
+Total 3 (delta 0), reused 0 (delta 0), pack-reused 0
+To /home/cent/project.git
+ * [new branch]      master -> master
+
+[cent@dlp work]$ git ls-files
+testfile1.txt
+
+# set any name to the repository
+[cent@dlp work]$ git remote add origin /home/cent/project.git
+[cent@dlp work]$ git remote -v
+origin  /home/cent/project.git (fetch)
+origin  /home/cent/project.git (push)
+
+[cent@dlp work]$ git remote show origin
+* remote origin
+  Fetch URL: /home/cent/project.git
+  Push  URL: /home/cent/project.git
+  HEAD branch: master
+  Remote branch:
+    master new (next fetch will store in remotes/origin)
+  Local ref configured for 'git push':
+    master pushes to master (up to date)
+
+# possible to push with the name you set above
+[cent@dlp work]$ echo testfile > testfile2.txt
+[cent@dlp work]$ git add testfile2.txt
+[cent@dlp work]$ git commit testfile2.txt -m "New Commit testfile2.txt"
+[master 2d27fe9] New Commit testfile2.txt
+ 1 file changed, 1 insertion(+)
+ create mode 100644 testfile2.txt
+
+[cent@dlp work]$ git push origin master
+Enumerating objects: 3, done.
+Counting objects: 100% (3/3), done.
+Delta compression using up to 2 threads
+Compressing objects: 100% (2/2), done.
+Writing objects: 100% (2/2), 253 bytes | 253.00 KiB/s, done.
+Total 2 (delta 0), reused 0 (delta 0), pack-reused 0
+To /home/cent/project.git
+   ea50586..b249f79  master -> master
+
+# for the case to clone existing repository to empty working directory
+[cent@dlp work]$ mkdir ~/work2
+[cent@dlp work]$ cd ~/work2
+[cent@dlp work2]$ git clone /home/cent/project.git
+Cloning into 'project'...
+done.
+
+[cent@dlp work2]$ ll
+total 0
+drwxr-xr-x. 3 cent cent 60 Jul 21 11:23 project
+[cent@dlp work2]$ ll project
+total 8
+-rw-r--r--. 1 cent cent 9 Jul 21 11:23 testfile1.txt
+-rw-r--r--. 1 cent cent 9 Jul 21 11:23 testfile2.txt
