@@ -1,0 +1,132 @@
+#Git : Access to Repos via HTTP
+	
+# Configure to access to Repos via HTTP.
+1.Install Apache httpd, refer to here.
+2.Configure SSL/TLS settings, refer to here (Optional).
+3.Configure Apache httpd to access to Git repositories.
+
+For example, set [/var/lib/git] as a root directory for Git repositories.
+[root@dlp ~]# vi /etc/httpd/conf.d/git.conf
+# create new
+SetEnv GIT_PROJECT_ROOT /var/lib/git
+SetEnv GIT_HTTP_EXPORT_ALL
+ScriptAlias /git/ /usr/libexec/git-core/git-http-backend/
+
+<Location /git>
+    Options ExecCGI
+    AuthName "Git for HTTP"
+    AuthType Basic
+    AuthUserFile /etc/httpd/conf/.htpasswd
+    Require valid-user
+</Location>
+
+[root@dlp ~]# systemctl restart httpd
+# add user : create a new file with [-c]
+[root@dlp ~]# htpasswd -c /etc/httpd/conf/.htpasswd cent
+New password:     # set password
+Re-type new password:
+Adding password for user cent
+
+
+4.Create a Git repository under the root directory.
+[root@dlp ~]# cd /var/lib/git
+[root@dlp git]# mkdir project01.git
+[root@dlp git]# cd project01.git
+[root@dlp project01.git]# git init --bare --shared
+hint: Using 'master' as the name for the initial branch. This default branch name
+hint: is subject to change. To configure the initial branch name to use in all
+hint: of your new repositories, which will suppress this warning, call:
+hint:
+hint:   git config --global init.defaultBranch <name>
+hint:
+hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+hint: 'development'. The just-created branch can be renamed via this command:
+hint:
+hint:   git branch -m <name>
+Initialized empty shared Git repository in /var/lib/git/project01.git/
+
+[root@dlp project01.git]# chgrp -R apache /var/lib/git/project01.git
+
+5.If SELinux enabled, change policy.
+[root@dlp ~]# setsebool -P domain_can_mmap_files on
+[root@dlp ~]# vi smart-git.te
+# create new
+module smart-git 1.0;
+
+require {
+        type httpd_t;
+        type httpd_var_lib_t;
+        type git_sys_content_t;
+        class file { create link map rename setattr unlink write };
+        class dir { add_name create remove_name rmdir setattr write };
+}
+
+#============= httpd_t ==============
+allow httpd_t git_sys_content_t:dir { add_name create remove_name rmdir setattr write };
+allow httpd_t git_sys_content_t:file { create link rename setattr unlink write };
+
+[root@dlp ~]# checkmodule -m -M -o smart-git.mod smart-git.te
+[root@dlp ~]# semodule_package --outfile smart-git.pp --module smart-git.mod
+[root@dlp ~]# semodule -i smart-git.pp
+
+6.Verify to access to a Git repository via HTTP.
+[redhat@node01 ~]$ mkdir work
+[redhat@node01 ~]$ cd work
+# the user is you added with htpasswd on [3]
+[redhat@node01 work]$ git clone https://cent@dlp.srv.world/git/project01.git
+Cloning into 'project01'...
+Password for 'https://cent@dlp.srv.world':   # password of the user in htpasswd
+warning: You appear to have cloned an empty repository.
+
+[redhat@node01 work]$ cd project01
+[redhat@node01 project01]$ git config --global user.name "Server World"
+[redhat@node01 project01]$ git config --global user.email "redhat@node01.srv.world"
+[redhat@node01 project01]$ echo testfile > testfile1.txt
+[redhat@node01 project01]$ git add testfile1.txt
+[redhat@node01 project01]$ git commit testfile1.txt -m "Initial Commit"
+[master (root-commit) 90e9e0f] Initial Commit
+ 1 file changed, 1 insertion(+)
+ create mode 100644 testfile1.txt
+
+[cent@node01 project01]$ git remote -v
+origin  https://cent@dlp.srv.world/git/project01.git (fetch)
+origin  https://cent@dlp.srv.world/git/project01.git (push)
+
+[redhat@node01 project01]$ git push origin master
+Password for 'https://cent@dlp.srv.world':
+Enumerating objects: 3, done.
+Counting objects: 100% (3/3), done.
+Writing objects: 100% (3/3), 234 bytes | 117.00 KiB/s, done.
+Total 3 (delta 0), reused 0 (delta 0), pack-reused 0
+To https://dlp.srv.world/git/project01.git
+ * [new branch]      master -> master
+
+[cent@node01 project01]$ git ls-files
+testfile1.txt
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

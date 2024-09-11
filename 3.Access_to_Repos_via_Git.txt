@@ -1,0 +1,40 @@
+#Git : Access to Repos via Git
+	
+It's possible to access to Git repositories (read only) via Git protocol to install Git Daemon.
+1.Install Git Daemon.
+[root@dlp ~]# dnf -y install git-daemon
+[root@dlp ~]# systemctl enable --now git.socket
+
+2.If Firewalld is running, allow service.
+[root@dlp ~]# firewall-cmd --add-service=git
+success
+[root@dlp ~]# firewall-cmd --runtime-to-permanent
+success
+
+3.It's possible to access to [/var/lib/git] directory with Git protocol by default.
+(set as [/usr/libexec/git-core/git-daemon --base-path=/var/lib/git ***] in [git.socket])
+For example, Access to [/var/lib/git/project01.git] repository.
+
+[cent@node01 ~]$ mkdir work
+[cent@node01 ~]$ cd work
+# to specify repository, it is relative path of [--base-path=/var/lib/git]
+[cent@node01 work]$ git clone git://dlp.srv.world/project01.git
+Cloning into 'project01'...
+remote: Enumerating objects: 3, done.
+remote: Counting objects: 100% (3/3), done.
+remote: Total 3 (delta 0), reused 0 (delta 0), pack-reused 0
+Receiving objects: 100% (3/3), done.
+
+# impossible to [push] or other writable operations
+[cent@node01 work]$ cd project01
+[cent@node01 project01]$ echo testfile > testfile2.txt
+[cent@node01 project01]$ git add testfile2.txt
+[cent@node01 project01]$ git commit testfile2.txt -m "Commit"
+[master 3e5ca44] Commit
+ 1 file changed, 1 insertion(+)
+ create mode 100644 testfile2.txt
+[cent@node01 project01]$ git remote -v
+origin  git://dlp.srv.world/project01.git (fetch)
+origin  git://dlp.srv.world/project01.git (push)
+[cent@node01 project01]$ git push origin master
+fatal: remote error: access denied or repository not exported: /project01.git

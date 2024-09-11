@@ -1,0 +1,11 @@
+#Apache httpd : Install
+	
+Install Apache httpd to configure Web Server.
+1.Install httpd
+
+[root@www ~]# dnf -y install httpd
+
+# rename or remove welcome page
+[root@www ~]# mv /etc/httpd/conf.d/welcome.conf /etc/httpd/conf.d/welcome.conf.org.
+
+

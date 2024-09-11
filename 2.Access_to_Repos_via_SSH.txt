@@ -1,0 +1,50 @@
+#Git : Access to Repos via SSH
+ 	
+#It's possible to access to Git repositories via SSH.
+1.It is required that SSH Server is running on the Host Git repositories exist.
+2.For example, Access to a Git repository [dlp:srv.world/home/cent/project.git] from a remote Host via SSH.
+#Like the case of this example, it needs to access with a user who has the same UID with a user of repository owner.
+
+[cent@node01 ~]$ mkdir work
+[cent@node01 ~]$ cd work
+# clone repository via SSH
+[cent@node01 work]$ git clone ssh://acaluege@rlg.srv.local/home/cent/project.git
+Cloning into 'project'...
+cent@dlp.srv.world's password:   # password of the user (not required if set SSH key-pair)
+remote: Enumerating objects: 5, done.
+remote: Counting objects: 100% (5/5), done.
+remote: Compressing objects: 100% (3/3), done.
+remote: Total 5 (delta 0), reused 0 (delta 0), pack-reused 0
+Receiving objects: 100% (5/5), done.
+
+[master@node01 work]$ cd project
+[master@node01 project]$ ll
+total 8
+-rw-r--r--. 1 cent cent 9 Jul 21 13:14 testfile1.txt
+-rw-r--r--. 1 cent cent 9 Jul 21 13:14 testfile2.txt
+
+# set username and email address
+[cent@node01 project]$ git config --global user.name "Server RGL"
+[cent@node01 project]$ git config --global user.email "master@node01.srv.world"
+
+[cent@node01 project]$ echo test >> testfile1.txt
+[cent@node01 project]$ git commit testfile1.txt -m "Update testfile1.txt"
+[master c3e9f97] Update testfile1.txt
+ 1 file changed, 1 insertion(+)
+
+[cent@node01 project]$ git remote -v
+origin  ssh://cent@dlp.srv.world/home/cent/project.git (fetch)
+origin  ssh://cent@dlp.srv.world/home/cent/project.git (push)
+
+[cent@node01 project]$ git push origin master
+cent@dlp.srv.world's password:
+Enumerating objects: 5, done.
+Counting objects: 100% (5/5), done.
+Delta compression using up to 2 threads
+Compressing objects: 100% (2/2), done.
+Writing objects: 100% (3/3), 298 bytes | 149.00 KiB/s, done.
+Total 3 (delta 0), reused 0 (delta 0), pack-reused 0
+To ssh://dlp.srv.world/home/cent/project.git
+   b249f79..8615fd3  master -> master
+
+
