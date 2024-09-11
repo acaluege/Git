@@ -1,0 +1,138 @@
+[root@rgl Git.git]# sudo dnf install gh
+Last metadata expiration check: 0:48:30 ago on Wed 11 Sep 2024 04:49:24 AM EDT.
+No match for argument: gh
+Error: Unable to find a match: gh
+
+#Parece que o pacote gh (GitHub CLI) não está disponível nos repositórios padrão do seu sistema. 
+#Isso pode acontecer porque o Rocky Linux não inclui o gh por padrão nos repositórios principais. 
+#No entanto, você pode instalar o GitHub CLI manualmente, seguindo estas etapas:
+
+1. Habilitar o Repositório para GitHub CLI
+#Primeiro, adicione o repositório oficial do GitHub CLI:
+sudo dnf install 'dnf-command(config-manager)'
+sudo dnf config-manager --add-repo https://cli.github.com/packages/rpm/gh-cli.repo
+
+2. Instalar o GitHub CLI
+#Depois de adicionar o repositório, execute o seguinte comando para instalar o gh:
+sudo dnf install gh
+
+3. Verificar a Instalação
+Após a instalação, verifique se o gh foi instalado corretamente com:
+gh --version
+
+#Agora você deve conseguir usar o GitHub CLI para criar repositórios remotos via SSH diretamente do terminal.
+
+#Se preferir continuar sem a GitHub CLI, você ainda pode criar o repositório remoto manualmente na interface do GitHub e conectar o repositório local a ele via SSH como explicado anteriormente.
+
+######################
+STEP 2
+
+#####################
+[root@rgl Git.git]# sudo dnf install 'dnf-command(config-manager)'
+Last metadata expiration check: 0:49:13 ago on Wed 11 Sep 2024 04:49:24 AM EDT.
+Package dnf-plugins-core-4.0.21-25.el8.noarch is already installed.
+Dependencies resolved.
+Nothing to do.
+Complete!
+[root@rgl Git.git]# sudo dnf config-manager --add-repo https://cli.github.com/packages/rpm/gh-cli.repo
+Adding repo from: https://cli.github.com/packages/rpm/gh-cli.repo
+[root@rgl Git.git]#
+
+
+#Parece que você conseguiu adicionar o repositório para o GitHub CLI. 
+#Agora, o próximo passo é instalar o gh. Se a instalação do gh ainda não foi feita, tente o seguinte:
+
+1. Atualizar o Repositório
+#Atualize o cache do repositório para garantir que o repositório adicionado seja incluído na lista de pacotes disponíveis:
+sudo dnf makecache
+
+2. Instalar o GitHub CLI
+#Tente instalar o gh novamente:
+sudo dnf install gh
+
+#Se a instalação for bem-sucedida, você pode verificar a versão instalada para confirmar que tudo está funcionando:
+gh --version
+
+#Alternativa: Instalação Manual do GitHub CLI
+#Se o repositório não estiver funcionando corretamente, você pode instalar o GitHub CLI manualmente. Aqui está como fazer isso:
+
+#Baixar o Pacote RPM
+
+#Visite a página de lançamentos do GitHub CLI e baixe o arquivo RPM mais recente. Você pode usar wget para baixar o pacote diretamente:
+wget https://github.com/cli/cli/releases/download/v2.24.1/gh_2.24.1_linux_amd64.rpm
+
+(Substitua a versão e o nome do arquivo conforme necessário.)
+
+3.Instalar o Pacote RPM
+#Depois de baixar o arquivo RPM, instale-o usando:
+sudo dnf install gh_2.24.1_linux_amd64.rpm
+
+#(Novamente, substitua o nome do arquivo conforme necessário.)
+# Após a instalação, você deve ser capaz de usar o GitHub CLI para criar e gerenciar repositórios diretamente do terminal. 
+#Se tiver mais dúvidas ou precisar de mais assistência, é só avisar!
+
+#####################################
+# AUTENTICAR MANUALMENTE
+######################################
+1. Autenticar Manualmente
+Copie o Código de Autenticação
+
+Você já recebeu um código de autenticação (por exemplo, 9549-03BB). Copie esse código.
+
+Abra o Navegador Manualmente
+
+#Abra o navegador da web de sua escolha e vá para o URL fornecido:
+https://github.com/login/device
+
+
+[root@rgl Git.git]# git config --global credential.helper cache
+
+[root@rgl Git.git]# git push https://github.com/acaluege/Git.git
+remote: No anonymous write access.
+fatal: Authentication failed for 'https://github.com/acaluege/Git.git/'
+
+[root@rgl Git.git]# ssh-keygen -t rsa -b 4096 -C "seu_email@example.com"
+Generating public/private rsa key pair.
+Enter file in which to save the key (/root/.ssh/id_rsa): ^C
+
+[root@rgl Git.git]# ssh-keygen -t rsa -b 4096 -C "acaluege@outlook.com"
+Generating public/private rsa key pair.
+Enter file in which to save the key (/root/.ssh/id_rsa):
+Enter passphrase (empty for no passphrase):
+Enter same passphrase again:
+Your identification has been saved in /root/.ssh/id_rsa.
+Your public key has been saved in /root/.ssh/id_rsa.pub.
+The key fingerprint is:
+SHA256:U+PMxNfVljblnqu4PFojxNckf39ajmDn50qOmKNql+A acaluege@outlook.com
+The key's randomart image is:
++---[RSA 4096]----+
+|                *|
+|         .   . *o|
+|          =...o.o|
+|        .* o=  ..|
+|        So+. o o.|
+|      . ...   . o|
+|     . . o oo o.+|
+|      E o ==oB.=o|
+|     ..o.o+=+.*+o|
++----[SHA256]-----+
+[root@rgl Git.git]# eval "$(ssh-agent -s)"
+Agent pid 42373
+[root@rgl Git.git]# ssh-add ~/.ssh/id_rsa
+Enter passphrase for /root/.ssh/id_rsa:
+Identity added: /root/.ssh/id_rsa (acaluege@outlook.com)
+[root@rgl Git.git]# cat ~/.ssh/id_rsa.pub
+SOSvcdCelZ6236wghhgsdhgsdnmfndfkjjkcjkcvm,,mm,xclkxclkxckjxnbzbzcbbxbcmzbkjcbocblkdfbdjfpjsoihvihsdoivhiosdc4Tw3oxqBVDQQ== acaluege@outlook.com
+
+[root@rgl Git.git]# git remote set-url origin git@github.com:acaluege/Git.git
+[root@rgl Git.git]# git push origin main
+Enumerating objects: 29, done.
+
+
+
+
+
+
+
+
+

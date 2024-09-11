@@ -1,0 +1,161 @@
+#Como resolver o erro abaixo 
+[root@rgl Rocky_Linux]# git push https://github.com/acaluege/Rocky_Linux.git
+
+(gnome-ssh-askpass:38921): Gtk-WARNING **: 05:00:10.569: cannot open display:
+error: unable to read askpass response from '/usr/libexec/openssh/gnome-ssh-askpass'
+
+#Nota:Esse erro ocorre porque o Git está tentaindo utilizar um programa gráfico (neste caso, gnome-ssh-askpass) para solicitar sua senha SSH, mas o ambiente gráfico não está disponível (não há um display gráfico ativo no momento).
+
+#Para resolver isso, você pode tentar algumas abordagens diferentes:
+1. Usar Autenticação HTTPS com Nome de Usuário e Senha:
+#Se você está tentando fazer push para um repositório remoto usando o protocolo HTTPS, uma alternativa é fornecer diretamente as credenciais (nome de usuário e senha), ou utilizar tokens de acesso pessoal em vez de senha, caso o provedor de Git (como o GitHub) exija.
+
+#Step1:Primeiro, configure o Git para não utilizar a autenticação gráfica (SSH). Execute o comando:
+git config --global credential.helper cache
+
+#Step2:Depois, tente fazer o push novamente, o Git vai pedir suas credenciais:
+git push https://github.com/acaluege/Rocky_Linux.git
+
+#Nota:Será solicitada sua senha, e, se estiver usando autenticação de dois fatores no GitHub, use um token de acesso pessoal em vez da senha normal.
+
+2. Trocar para Autenticação via Chave SSH:
+#Se você prefere usar a autenticação SSH em vez de HTTPS, pode gerar uma chave SSH e configurá-la no GitHub para evitar a solicitação de senha.
+
+2.1.Gere uma chave SSH (se ainda não tiver):
+ssh-keygen -t rsa -b 4096 -C "seu_email@example.com"
+
+#Pressione Enter até finalizar.
+
+2.2.Adicione sua chave SSH ao ssh-agent:
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_rsa
+
+2.3.Copie a chave pública para o GitHub:
+cat ~/.ssh/id_rsa.pub
+
+Adicione essa chave pública no GitHub (em Configurações > SSH and GPG keys).
+
+2.4.Agora, altere o repositório remoto para usar o SSH em vez de HTTPS:
+git remote set-url origin git@github.com:acaluege/Rocky_Linux.git
+
+2.5.Agora tente fazer o push novamente:
+git push origin main
+
+3. Ignorar o gnome-ssh-askpass e Usar a Linha de Comando:
+#Se você quiser desabilitar o gnome-ssh-askpass completamente e forçar a solicitação de senha diretamente no terminal, 
+#defina a variável GIT_ASKPASS como echo:
+unset SSH_ASKPASS
+unset GIT_ASKPASS
+git push https://github.com/acaluege/Rocky_Linux.git
+
+#Nota:Com isso, o Git vai pedir a senha diretamente no terminal.
+
+#OBS: Cao o erro persistir
+1. Definir as Variáveis de Ambiente Manualmente
+Tente definir as variáveis de ambiente GIT_ASKPASS e SSH_ASKPASS para impedir o uso do gnome-ssh-askpass:
+export GIT_ASKPASS=/bin/true
+export SSH_ASKPASS=/bin/true
+
+#Depois, execute o comando git push novamente:
+git push https://github.com/acaluege/Rocky_Linux.git
+
+#Isso deve impedir que o Git tente abrir o gnome-ssh-askpass e forçar a solicitação da senha diretamente no terminal.
+
+2. Verificar o Agente SSH
+#Caso esteja utilizando chaves SSH para autenticação, verifique se o agente SSH está em execução corretamente. Para isso, rode os seguintes comandos:
+
+#Inicie o agente SSH:
+eval "$(ssh-agent -s)"
+
+
+Se o erro continua, mesmo após as soluções anteriores, você pode tentar algumas abordagens adicionais para solucionar o problema.
+
+1. Definir as Variáveis de Ambiente Manualmente
+Tente definir as variáveis de ambiente GIT_ASKPASS e SSH_ASKPASS para impedir o uso do gnome-ssh-askpass:
+
+bash
+Copy code
+export GIT_ASKPASS=/bin/true
+export SSH_ASKPASS=/bin/true
+Depois, execute o comando git push novamente:
+
+bash
+Copy code
+git push https://github.com/acaluege/Rocky_Linux.git
+Isso deve impedir que o Git tente abrir o gnome-ssh-askpass e forçar a solicitação da senha diretamente no terminal.
+
+2. Verificar o Agente SSH
+Caso esteja utilizando chaves SSH para autenticação, verifique se o agente SSH está em execução corretamente. Para isso, rode os seguintes comandos:
+
+#Inicie o agente SSH:
+eval "$(ssh-agent -s)"
+
+Adicione sua chave SSH:
+ssh-add ~/.ssh/id_rsa
+
+#Nota:Se não estiver utilizando uma chave SSH, configure uma conforme indicado anteriormente.
+
+3. Utilizar Chave SSH diretamente no GitHub
+#Se o problema persistir e você deseja evitar o uso de senha em push/pull, recomendo que configure o uso de uma chave SSH no GitHub. Aqui está o procedimento básico:
+
+#Verifique se a chave SSH foi corretamente configurada:
+#Verifique se você tem uma chave SSH configurada no seu computador:
+ls ~/.ssh/id_rsa
+
+#Se a chave não existir, crie uma nova chave:
+ssh-keygen -t rsa -b 4096 -C "seu_email@example.com"
+
+#Adicione a chave SSH ao ssh-agent:
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_rsa
+
+#Adicione a chave SSH ao GitHub:
+#Copie sua chave pública:
+cat ~/.ssh/id_rsa.pub
+
+#E cole no GitHub, em Configurações > SSH and GPG keys.
+
+#Altere a URL remota do repositório para usar o SSH:
+#Altere o URL remoto para o formato SSH:
+git remote set-url origin git@github.com:acaluege/Rocky_Linux.git
+
+#Agora, tente o push:
+git push origin main
+
+
+4. Usar o Token de Acesso Pessoal (Para HTTPS)
+#Se continuar usando o HTTPS para autenticação, uma alternativa é gerar um token de acesso pessoal (no lugar da senha do GitHub), o que evita problemas de autenticação.
+
+#Gere um token no GitHub, indo para Configurações > Developer settings > Personal access tokens.
+#Use o token em vez da senha ao fazer o git push:
+git push https://username:seu_token@github.com/acaluege/Rocky_Linux.git
+
+5. Alternar para a Sessão root Completa
+Se estiver rodando o comando Git como root (como indica o prompt [root@rgl Rocky_Linux]#), tente trocar para um ambiente de shell sem dependência gráfica:
+su - root
+
+#Isso vai garantir que o ambiente root tenha as variáveis adequadas.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

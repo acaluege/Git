@@ -1,0 +1,152 @@
+[root@rgl Git.git]# git pull https://github.com/acaluege/Git.git
+remote: Repository not found.
+fatal: Authentication failed for 'https://github.com/acaluege/Git.git/'
+
+#Para criar um repositório Git local, configurá-lo para usar SSH e movê-lo para um repositório remoto no GitHub, siga os passos abaixo:
+
+1. Criar o Repositório Localmente
+#Se você ainda não tem um repositório local, pode inicializá-lo da seguinte forma:
+git init nome_do_repositorio
+cd nome_do_repositorio
+
+#Adicione alguns arquivos para versão:
+touch README.md
+git add README.md
+git commit -m "Primeiro commit"
+
+2. Criar o Repositório Remoto no GitHub
+#Vá até o GitHub e crie um novo repositório.
+#Copie a URL SSH fornecida após a criação do repositório, algo como: git@github.com:acaluege/Git.git.
+
+3. Adicionar o Repositório Remoto
+Agora, no seu repositório local, adicione o repositório remoto usando a URL SSH que você copiou:
+git remote add origin git@github.com:acaluege/Git.git
+
+4. Empurrar o Repositório Local para o Remoto
+#Agora, envie seus commits locais para o repositório remoto no GitHub:
+git push -u origin main
+
+#Isso empurrará suas alterações para o ramo main do repositório remoto no GitHub. Se você receber uma mensagem de erro informando que o ramo main não existe, você pode ser solicitado a configurar o nome da sua branch padrão.
+
+5. Verificando o SSH
+#Se estiver utilizando SSH para autenticação, certifique-se de que a chave SSH está configurada corretamente no GitHub:
+
+#Verifique se existe uma chave SSH em seu sistema:
+ls ~/.ssh/id_rsa
+
+#Caso não exista, gere uma nova chave SSH:
+ssh-keygen -t rsa -b 4096 -C "seu_email@example.com"
+
+3.Adicione a chave ao ssh-agent:
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_rsa
+
+4.Adicione a chave pública ao GitHub: Copie a chave pública:
+cat ~/.ssh/id_rsa.pub
+
+#No GitHub, vá até Configurações > SSH and GPG keys > New SSH Key e cole a chave pública.
+
+6. Pull do Repositório Remoto via SSH
+Depois de configurar corretamente a autenticação SSH, você pode puxar as mudanças do repositório remoto com o comando:
+git pull origin main
+
+##########################################
+SOLUÇÃO #02
+############################################
+Sim, é possível criar um repositório Git localmente e movê-lo para um repositório remoto via SSH diretamente do terminal, sem precisar interagir com a interface web do GitHub. Aqui está um passo a passo para fazer isso:
+
+1. Criar o Repositório Localmente
+#Se você ainda não tem um repositório Git local, inicie um novo:
+mkdir nome_do_repositorio
+cd nome_do_repositorio
+git init
+
+2. Criar o Repositório Remoto via SSH
+#Você pode criar um repositório remoto diretamente no GitHub via SSH usando a API do GitHub, mas isso requer a instalação e uso da ferramenta gh (GitHub CLI)#Instalar o GitHub CLI (gh): 
+#Para criar um repositório via código, você precisará instalar o GitHub CLI. No seu terminal, rode o comando abaixo (no caso de distribuições baseadas no RedHat como o Rocky Linux):
+sudo dnf install gh
+
+3.Autenticar o gh: Após instalar o GitHub CLI, autentique-se no GitHub:
+gh auth login
+
+#Nota:Escolha o método de autenticação via SSH quando solicitado.
+
+4.Criar o Repositório Remoto: Com o gh autenticado, você pode criar o repositório remoto diretamente do terminal:
+gh repo create nome_do_repositorio --public --source=. --remote=origin --ssh
+
+--public: Define o repositório como público (use --private para repositórios privados).
+--source=.: Diz ao gh para criar o repositório remoto com base no repositório local atual.
+--remote=origin: Adiciona o repositório remoto como origin.
+--ssh: Configura o repositório para usar o SSH para autenticação.
+
+5. Fazer o Commit e Push para o Repositório Remoto
+#Agora que o repositório remoto foi criado, faça o commit das mudanças locais e envie para o repositório remoto:
+
+#Adicionar os arquivos:
+git add .
+
+#Fazer o commit:
+git commit -m "Primeiro commit"
+
+#Enviar (push) as mudanças para o repositório remoto:
+git push -u origin main
+
+#Isso moverá o repositório local para o repositório remoto criado no GitHub via SSH.
+
+4. Verificar a Conexão SSH
+Se você ainda não configurou suas chaves SSH, verifique se sua chave SSH está funcionando corretamente com o GitHub:
+
+#Verifique se a chave SSH existe:
+ls ~/.ssh/id_rsa
+
+#Se necessário, gere uma chave SSH:
+ssh-keygen -t rsa -b 4096 -C "seu_email@example.com"
+
+#Adicione sua chave SSH ao ssh-agent:
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_rsa
+
+#Adicione a chave pública ao GitHub:
+cat ~/.ssh/id_rsa.pub
+
+#E copie a saída para Configurações > SSH and GPG keys no GitHub.
+#Agora, com tudo configurado, você pode trabalhar diretamente no terminal, criando e movendo repositórios locais para o GitHub via SSH.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

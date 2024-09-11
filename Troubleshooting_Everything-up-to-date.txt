@@ -1,0 +1,14 @@
+[root@rgl Rocky_Linux]# git push https://github.com/acaluege/Rocky_Linux.git
+Everything up-to-date
+
+#A mensagem Everything up-to-date no Git significa que não há novas alterações locais a serem enviadas para o repositório remoto. Isso acontece quando:
+
+#Você já realizou um git push e todas as suas alterações locais já estão sincronizadas com o repositório remoto.
+#Nenhuma alteração foi feita nos arquivos desde o último commit e push.
+
+#Resumindo, o repositório local está em sincronia com o repositório remoto, e não há nada novo para enviar.
+
+###########
+#A mensagem Everything up-to-date significa que o estado do repositório local já está sincronizado com o repositório remoto. Ou seja:
+
+#Nenhuma nova alteração local foi feita que precise ser enviada (push) para o repositório remoto.

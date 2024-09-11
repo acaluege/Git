@@ -1,0 +1,82 @@
+erro [root@rgl Rocky_Linux]# git push https://github.com/acaluege/Rocky_Linux.git
+remote: No anonymous write access.
+fatal: Authentication failed for 'https://github.com/acaluege/Rocky_Linux.git/'
+
+#O erro "No anonymous write access" indica que você está tentando fazer um git push para o repositório GitHub usando o protocolo HTTPS, mas sem autenticação adequada. Para resolver isso, você pode usar uma das opções abaixo:
+
+1. Usar Token de Acesso Pessoal (HTTPS)
+#O GitHub não permite mais o uso de senhas normais para operações git push via HTTPS. Em vez disso, você deve usar um token de acesso pessoal.
+
+#Aqui está o que você pode fazer:
+
+1.Gerar um Token de Acesso Pessoal no GitHub:
+
+#No GitHub, vá em Configurações > Developer settings > Personal access tokens.
+
+#Clique em Generate new token.
+
+#Selecione as permissões que você deseja (para operações Git, você deve habilitar "repo").
+
+#Copie o token gerado (você verá o token apenas uma vez, então salve-o em um lugar seguro).
+
+2.Usar o Token no Comando Git: Quando o Git solicitar suas credenciais ao fazer git push, você deverá usar seu nome de usuário do GitHub e, no lugar da senha, colar o token.
+
+#Você pode fazer isso diretamente no comando:
+git push https://<seu_usuario>:<seu_token>@github.com/acaluege/Rocky_Linux.git
+
+#Substitua <seu_usuario> pelo seu nome de usuário do GitHub e <seu_token> pelo token gerado.
+
+2. Trocar para Autenticação SSH
+#Se você preferir evitar o uso de tokens e deseja usar SSH para autenticação, siga estas etapas para configurar o acesso via chave SSH:
+
+1.Gerar uma Chave SSH (se você ainda não tiver uma):
+ssh-keygen -t rsa -b 4096 -C "seu_email@example.com"
+
+2.Adicionar a Chave ao ssh-agent:
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_rsa
+
+3.Adicionar a Chave SSH ao GitHub:
+#Copie sua chave pública gerada:
+cat ~/.ssh/id_rsa.pub
+
+#No GitHub, vá em Configurações > SSH and GPG keys > New SSH key, cole a chave pública e salve.
+
+4.Alterar a URL Remota para Usar o SSH:
+#Agora, modifique a URL remota do repositório para o formato SSH:
+git remote set-url origin git@github.com:acaluege/Rocky_Linux.git
+
+5.Fazer o Push com SSH:
+#Agora você deve conseguir fazer o git push usando SSH sem necessidade de senha
+git push origin main
+
+#Nota:Se seguir um desses métodos, a autenticação será feita corretamente e o git push será concluído com sucesso.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
