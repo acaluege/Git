@@ -1,0 +1,105 @@
+#Git : Create Shared Repositories
+	
+Create Shared Repositories which some users can use.
+
+1.Create a group for share and set users in the group.
+# create a group
+[root@dlp ~]# groupadd project01
+
+# add users to the group
+[root@dlp ~]# usermod -aG project01 cent
+[root@dlp ~]# usermod -aG project01 redhat
+
+
+2.Create a shared repository with a user.
+# create a directory for repository and change group
+[cent@dlp ~]$ mkdir project.git
+[cent@dlp ~]$ chgrp project01 project.git
+[cent@dlp ~]$ cd project.git
+
+[cent@dlp project.git]$ chmod 755 /home/cent
+
+# set empty share repository
+[cent@dlp project.git]$ git init --bare --shared
+hint: Using 'master' as the name for the initial branch. This default branch name
+hint: is subject to change. To configure the initial branch name to use in all
+hint: of your new repositories, which will suppress this warning, call:
+hint:
+hint:   git config --global init.defaultBranch <name>
+hint:
+hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+hint: 'development'. The just-created branch can be renamed via this command:
+hint:
+hint:   git branch -m <name>
+Initialized empty shared Git repository in /home/cent/project.git/
+
+# with [--shared] option, SGID is set like follows
+[cent@dlp project.git]$ ll -d /home/cent/project.git
+drwxrwsr-x. 7 cent project01 119 Jul 21 13:44 /home/cent/project.git
+
+3.Verify to use repository with users who are in the group for share added in [1].
+[redhat@node01 ~]$ mkdir work
+[redhat@node01 ~]$ cd work
+[redhat@node01 work]$ git init
+hint: Using 'master' as the name for the initial branch. This default branch name
+hint: is subject to change. To configure the initial branch name to use in all
+hint: of your new repositories, which will suppress this warning, call:
+hint:
+hint:   git config --global init.defaultBranch <name>
+hint:
+hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+hint: 'development'. The just-created branch can be renamed via this command:
+hint:
+hint:   git branch -m <name>
+Initialized empty Git repository in /home/redhat/work/.git/
+
+[redhat@node01 work]$ git config --global user.name "Server World"
+[redhat@node01 work]$ git config --global user.email "redhat@dlp.srv.world"
+# create a test file and push it to repository
+[redhat@node01 work]$ echo testfile > testfile1.txt
+[redhat@node01 work]$ git add testfile1.txt
+[redhat@node01 work]$ git commit testfile1.txt -m "Initial Commit"
+[master (root-commit) 6114986] Initial Commit
+ 1 file changed, 1 insertion(+)
+ create mode 100644 testfile1.txt
+
+[redhat@node01 work]$ git remote add origin ssh://redhat@dlp.srv.world/home/cent/project.git
+[redhat@node01 work]$ git push origin master
+redhat@dlp.srv.world's password:
+Enumerating objects: 3, done.
+Counting objects: 100% (3/3), done.
+Writing objects: 100% (3/3), 233 bytes | 116.00 KiB/s, done.
+Total 3 (delta 0), reused 0 (delta 0), pack-reused 0
+To ssh://dlp.srv.world/home/cent/project.git
+ * [new branch]      master -> master
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,138 @@
+#Git : Install Git for Windows
+ 	
+It's possible to access to Git repositories from Windows Clients, too.
+For example, Install Git for Windows on Windows 11.
+
+Download Git for Windows from the site below.
+⇒ https://gitforwindows.org/
+
+1.During Installation, you need to select some settings. (proceed to keep default all on this example)
+After installation, [Git Bash], [Git CMD], [Git GUI] are added like follows.
+
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+PS C:\Users\hiroyuki> mkdir work
+
+    Directory: C:\Users\hiroyuki
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+d-----         7/20/2022  11:24 PM                work
+
+PS C:\Users\hiroyuki> cd work
+PS C:\Users\hiroyuki\work> git clone https://cent@dlp.srv.world/git/project01.git
+Cloning into 'project01'...
+remote: Enumerating objects: 3, done.
+remote: Counting objects: 100% (3/3), done.
+remote: Total 3 (delta 0), reused 0 (delta 0), pack-reused 0
+Unpacking objects: 100% (3/3), 214 bytes | 30.00 KiB/s, done.
+PS C:\Users\hiroyuki\work> ls
+
+    Directory: C:\Users\hiroyuki\work
+
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+d-----         7/20/2022  11:26 PM                project01
+
+PS C:\Users\hiroyuki\work> cd project01
+PS C:\Users\hiroyuki\work\project01> ls
+
+    Directory: C:\Users\hiroyuki\work\project01
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----         7/20/2022  11:26 PM             10 testfile1.txt
+
+PS C:\Users\hiroyuki\work\project01> echo testfile > testfile2.txt
+PS C:\Users\hiroyuki\work\project01> git add testfile2.txt
+PS C:\Users\hiroyuki\work\project01> git config --global user.name "Server World"
+PS C:\Users\hiroyuki\work\project01> git config --global user.email "cent@win01.srv.world"
+PS C:\Users\hiroyuki\work\project01> git commit testfile2.txt -m "commit testfile2.txt"
+[master c1a707f] commit testfile2.txt
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 testfile2.txt
+PS C:\Users\hiroyuki\work\project01> git remote -v
+origin  https://cent@dlp.srv.world/git/project01.git (fetch)
+origin  https://cent@dlp.srv.world/git/project01.git (push)
+PS C:\Users\hiroyuki\work\project01> git push origin master
+Enumerating objects: 4, done.
+Counting objects: 100% (4/4), done.
+Delta compression using up to 2 threads
+Compressing objects: 100% (2/2), done.
+Writing objects: 100% (3/3), 303 bytes | 303.00 KiB/s, done.
+Total 3 (delta 0), reused 0 (delta 0), pack-reused 0
+To https://dlp.srv.world/git/project01.git
+   90e9e0f..c1a707f  master -> master
+PS C:\Users\hiroyuki\work\project01> git ls-files
+testfile1.txt
+testfile2.txt
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
